@@ -126,24 +126,7 @@ int RingBuffer::DirectDequeueSize(void)
 
 int RingBuffer::MoveRear(IN int sizeToMove)
 {
-	rear_ = (rear_ + sizeToMove) % (BUFFER_SIZE + 1);
-	return rear_;
-}
-
-int RingBuffer::MoveFront(IN int sizeToMove)
-{
-	front_ = (front_ + sizeToMove) % (BUFFER_SIZE + 1);
-	return front_;
-}
-
-char* RingBuffer::GetFrontPtr(void)
-{
-	return pBuffer_ + front_;
-}
-
-char* RingBuffer::GetRearPtr(void)
-{
-	return pBuffer_ + rear_;
+	return 1;
 }
 
 
