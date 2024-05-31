@@ -2,6 +2,7 @@
 #include <math.h>
 #include <memory.h>
 
+// 특이사항 : 원형 큐이기 때문에 할당 크기가 BUFFER_SIZE 보다 1 커야함
 RingBuffer::RingBuffer(void)
 {
 	pBuffer_ = new char[BUFFER_SIZE + 1];
@@ -13,6 +14,7 @@ RingBuffer::~RingBuffer(void)
 	delete[] pBuffer_;
 }
 
+// Return:  (int) 현재 Buffer에서 Enqueue되어있는 크기
 int RingBuffer::GetUseSize(void)
 {
 	if (rear_ - front_ >= 0)
@@ -25,12 +27,19 @@ int RingBuffer::GetUseSize(void)
 	}
 }
 
+// Return:(int)현재 Buffer에 추가로 Enequeue 가능한 크기
 int RingBuffer::GetFreeSize(void)
 {
 	return BUFFER_SIZE - GetUseSize();
 }
 
-int RingBuffer::Enqueue(IN char* pSource, IN size_t sizeToPut)
+//--------------------------------------------------------------------
+// 기능: Ring Buffer에 Data 삽입
+// Parameters:	IN (char *) Ring Buffer에 Data를 넣을 대상 Buffer
+//				IN (int) 복사할 크기
+// Return:		(int) Ring Buffer에 들어간 크기(사실상 0 혹은 sizeToPut 둘중 하나다)
+//--------------------------------------------------------------------
+int RingBuffer::Enqueue(IN char* pDest, IN size_t sizeToPut)
 {
 	int freeSize = GetFreeSize();	
 	if (sizeToPut > freeSize)
@@ -40,16 +49,17 @@ int RingBuffer::Enqueue(IN char* pSource, IN size_t sizeToPut)
 	}
 	int DirectSize = DirectEnqueueSize();
 
+	// DirectSize가 sizeToPut보다 크면 
 	int firstSize = DirectSize > sizeToPut ? sizeToPut : DirectSize;
 	int secondSize = sizeToPut - firstSize;
 
-	memcpy_s(pBuffer_ + rear_ + 1, firstSize, pSource, firstSize);
+	memcpy_s(pBuffer_ + rear_ + 1, firstSize, pDest, firstSize);
 	rear_ = (rear_ + firstSize) % (BUFFER_SIZE + 1);
 	if (secondSize <= 0)
 	{
 		return firstSize;
 	}
-	memcpy_s(pBuffer_, secondSize, pSource + firstSize, secondSize);
+	memcpy_s(pBuffer_, secondSize, pDest + firstSize, secondSize);
 	rear_ = (rear_ + secondSize) % (BUFFER_SIZE + 1);
 	return firstSize + secondSize;
 }
