@@ -2,7 +2,7 @@
 #define IN
 #define OUT
 
-constexpr int BUFFER_SIZE = 10000;
+constexpr int BUFFER_SIZE = 1000;
 
 class RingBuffer
 {
