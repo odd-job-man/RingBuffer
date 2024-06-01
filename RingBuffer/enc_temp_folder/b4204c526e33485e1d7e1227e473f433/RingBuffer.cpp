@@ -55,6 +55,12 @@ int RingBuffer::Enqueue(IN char* pDest, IN size_t sizeToPut)
 	int secondSize = sizeToPut - firstSize;
 
 	memcpy_s(pBuffer_ + rear_ + 1, firstSize, pDest, firstSize);
+
+	//for (int i = 0; i < firstSize; ++i)
+	//{
+	//	if ((pBuffer_ + rear_ + 1)[i] == '0' && (pBuffer_ + rear_ + 1)[i + 1] == '5')
+	//		__debugbreak();
+	//}
 	rear_ = (rear_ + firstSize) % (BUFFER_SIZE + 1);
 	if (secondSize <= 0)
 	{
