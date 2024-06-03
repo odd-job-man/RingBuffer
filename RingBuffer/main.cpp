@@ -8,6 +8,7 @@
 #include "RingBuffer.h"
 #include <windows.h>
 #include <queue>
+
 constexpr int CONSOLE_WIDTH = 237;
 
 RingBuffer rbTemp;
