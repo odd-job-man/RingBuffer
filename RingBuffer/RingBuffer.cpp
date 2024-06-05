@@ -54,14 +54,19 @@ int RingBuffer::Enqueue(IN char* pDest, IN size_t sizeToPut)
 	int firstSize = DirectSize > sizeToPut ? sizeToPut : DirectSize;
 	int secondSize = sizeToPut - firstSize;
 
-	memcpy_s(pBuffer_ + rear_ + 1, firstSize, pDest, firstSize);
-	rear_ = (rear_ + firstSize) % (BUFFER_SIZE + 1);
+	
+	memcpy_s(GetWriteStartPtr(), firstSize, pDest, firstSize);
+	MoveRear(firstSize);
+	//memcpy_s(pBuffer_ + rear_ + 1, firstSize, pDest, firstSize);
+	//rear_ = (rear_ + firstSize) % (BUFFER_SIZE + 1);
 	if (secondSize <= 0)
 	{
 		return firstSize;
 	}
-	memcpy_s(pBuffer_, secondSize, pDest + firstSize, secondSize);
-	rear_ = (rear_ + secondSize) % (BUFFER_SIZE + 1);
+	memcpy_s(GetWriteStartPtr(), secondSize, pDest + firstSize, secondSize);
+	MoveRear(secondSize);
+	//memcpy_s(pBuffer_, secondSize, pDest + firstSize, secondSize);
+	//rear_ = (rear_ + secondSize) % (BUFFER_SIZE + 1);
 	return firstSize + secondSize;
 }
 
@@ -84,12 +89,16 @@ int RingBuffer::Dequeue(OUT char* pDest, IN size_t sizeToRead)
 	int firstSize = directSize > sizeToRead ? sizeToRead : directSize;
 	int secondSize = sizeToRead - firstSize;
 
-	memcpy_s(pDest, firstSize, pBuffer_ + front_ + 1, firstSize);
-	front_ = (front_ + firstSize) % (BUFFER_SIZE + 1);
+	memcpy_s(pDest, firstSize, GetReadStartPtr(), firstSize);
+	MoveFront(firstSize);
+	//memcpy_s(pDest, firstSize, pBuffer_ + front_ + 1, firstSize);
+	//front_ = (front_ + firstSize) % (BUFFER_SIZE + 1);
 	if (secondSize <= 0)
 		return firstSize;
-	memcpy_s(pDest + firstSize, secondSize, pBuffer_, secondSize);
-	front_ = (front_ + secondSize) % (BUFFER_SIZE + 1);
+	memcpy_s(pDest + firstSize, secondSize, GetReadStartPtr(), secondSize);
+	MoveFront(secondSize);
+	//memcpy_s(pDest + firstSize, secondSize, pBuffer_, secondSize);
+	//front_ = (front_ + secondSize) % (BUFFER_SIZE + 1);
 	return firstSize + secondSize;
 }
 
@@ -106,6 +115,7 @@ int RingBuffer::Peek(IN int sizeToPeek, OUT char* pTarget)
 	int firstSize = directSize > sizeToPeek ? sizeToPeek: directSize;
 	int secondSize = sizeToPeek - firstSize;
 
+	//memcpy_s(pTarget, firstSize, GetReadStartPtr(), firstSize);
 	memcpy_s(pTarget, firstSize, pBuffer_ + front_ + 1, firstSize);
 	if (secondSize <= 0)
 		return firstSize;
@@ -169,6 +179,16 @@ char* RingBuffer::GetFrontPtr(void)
 char* RingBuffer::GetRearPtr(void)
 {
 	return pBuffer_ + rear_;
+}
+
+char* RingBuffer::GetWriteStartPtr(void)
+{
+	return pBuffer_ + ((rear_ + 1) % (BUFFER_SIZE + 1));
+}
+
+char* RingBuffer::GetReadStartPtr(void)
+{
+	return pBuffer_ + ((front_ + 1) % (BUFFER_SIZE + 1));
 }
 
 

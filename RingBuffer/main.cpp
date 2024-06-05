@@ -36,15 +36,27 @@ void extractBytes(std::queue<char>& myQueue, char* buffer, int bytes) {
 
 int main()
 {
-	char testString[] = "@234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345*!";
+	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	GetConsoleScreenBufferInfo(hStdout, &csbi);
+	int consoleWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+	//char testString[] = "@234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345*!";
+	char testString[] = "48321748932174893027398229111749@@@@@@@@@@@@@@@@87248392749208472!!!!!!!!!!!!!!9834***********724092873489207482390470294@@@@@@@@@@@@";
 	int len = strlen(testString);
 	std::queue<char> q;
-	srand((unsigned)time(nullptr));
+	srand(1);
+	//srand((unsigned)time(nullptr));
+	int i = 0;
 	while (true)
 	{
+		//memset(dequeueBuf, 0, sizeof(dequeueBuf));
+		//++i;
+		//int enqueueSize = rb.Enqueue(testString, len);
+		//int dequeueSize = rb.Dequeue(dequeueBuf, len);
+		//printArray(len, dequeueBuf);
 		memset(peekBuf, 0, sizeof(peekBuf));
-		memset(dequeueBuf, 0, sizeof(dequeueBuf));
 		memset(tempBuf, 0, sizeof(tempBuf));
+		memset(dequeueBuf, 0, sizeof(dequeueBuf));
 
 		int enqueueSize = 0;
 		int dequeueSize = 0;

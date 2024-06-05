@@ -21,6 +21,8 @@ public:
 	int MoveFront(IN int sizeToMove);
 	char* GetFrontPtr(void);
 	char* GetRearPtr(void);
+	char* GetWriteStartPtr(void);
+	char* GetReadStartPtr(void);
 
 	char* pBuffer_;
 	int front_;
